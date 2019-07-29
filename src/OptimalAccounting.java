@@ -22,7 +22,6 @@ public class OptimalAccounting {
 				AccountingInput accountingInput = pruning(buyerAccounts,sellerAccounts);
 				buyerAccounts = accountingInput.getBuyerAccount();
 				sellerAccounts = accountingInput.getSellerAccount();
-				//剪枝2
 				for (int i = 0; i < buyerAccounts.size(); i++) {
 				     for (int j = 0; j < sellerAccounts.size(); j++) {
 					//剪枝2--寻找买方账户额度之和等于卖方某个账户额度，直接成交
@@ -65,7 +64,6 @@ public class OptimalAccounting {
 				      }
 				     }
 				    }
-				
 				//贪心策略 	每次取买卖双方最大额度的账户成交，相减并更新额度
 				int maxBuyerIndex = TradeAccount.maxLimit(buyerAccounts);
 				int maxSellerIndex = TradeAccount.maxLimit(sellerAccounts);

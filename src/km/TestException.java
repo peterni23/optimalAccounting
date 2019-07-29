@@ -1,17 +1,25 @@
 package km;
 
-import org.apache.log4j.Logger;  
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
-public class TestException {
-    public static final Logger logger = Logger.getLogger("logger.debug");  
+
+public class TestException extends Thread{
     
-    public static void main(String[] args) {  
-        try {  
-            int a = 1 / 0;  
-        } catch (Exception e) {  
-            logger.error("ERROR", e);  
-              
-            //e.printStackTrace();  
-        }  
+    public static void main(String[] args) {
+    	
+    	for(int i=0;i<5;i++){
+    		new TestException().start();
+    	}
+    	
     }  
+        @Override
+		public void run() {
+        	Map<String, List<String>> map = (new getStaticParam()).getMap();
+        	List<String> list = map.get("usd");
+//        	System.out.println(list);
+        	Collections.sort(list);
+		}
+	
 }
