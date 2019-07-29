@@ -22,50 +22,69 @@ public class OptimalAccounting {
 				AccountingInput accountingInput = pruning(buyerAccounts,sellerAccounts);
 				buyerAccounts = accountingInput.getBuyerAccount();
 				sellerAccounts = accountingInput.getSellerAccount();
-				//剪枝2
+				//剪枝2 利用k-sum
+				 //将当前买卖双方不为0的账户 额度放到数组里 作为k-sum的输入
+				List<Integer> buyerLimitsNotZero = new ArrayList<>();
 				for (int i = 0; i < buyerAccounts.size(); i++) {
-				     for (int j = 0; j < sellerAccounts.size(); j++) {
-					//剪枝2--寻找买方账户额度之和等于卖方某个账户额度，直接成交
-				    if (buyerAccounts.get(i).getLimit() != 0 && sellerAccounts.get(j).getLimit() != 0
-				        && (buyerAccounts.get(i).getLimit() > sellerAccounts.get(j).getLimit())) {
-				       if (isContains(sellerAccounts,
-				         buyerAccounts.get(i).getLimit() - sellerAccounts.get(j).getLimit())) {
-				        dealCount++;
-				        stringAppend(output,buyerAccounts.get(i).getIndex(),sellerAccounts.get(j).getIndex(),
-				        		sellerAccounts.get(j).getLimit());
-				        buyerAccounts.get(i).setLimit(buyerAccounts.get(i).getLimit() - sellerAccounts.get(j).getLimit());
-				        sellerAccounts.get(j).setLimit(0);
-				        //剪枝1
-				        accountingInput = pruning(buyerAccounts,sellerAccounts);
-						buyerAccounts = accountingInput.getBuyerAccount();
-						sellerAccounts = accountingInput.getSellerAccount();
-				       } else {
-
-				       }
-				      } else if (buyerAccounts.get(i).getLimit() != 0 && sellerAccounts.get(j).getLimit() != 0
-				        && (buyerAccounts.get(i).getLimit() < sellerAccounts.get(j).getLimit())) {
-				    	 //剪枝2--寻找卖方账户额度之和等于买方某个账户额度，直接成交
-				       if (isContains(buyerAccounts,
-				         sellerAccounts.get(j).getLimit() - buyerAccounts.get(i).getLimit())) {
-				        dealCount++;
-				        stringAppend(output,buyerAccounts.get(i).getIndex(),sellerAccounts.get(j).getIndex(),
-				        		buyerAccounts.get(i).getLimit());
-				        sellerAccounts.get(j)
-				          .setLimit(sellerAccounts.get(j).getLimit() - buyerAccounts.get(i).getLimit());
-				        buyerAccounts.get(i).setLimit(0);
-				        //剪枝1
-				        accountingInput = pruning(buyerAccounts,sellerAccounts);
-						buyerAccounts = accountingInput.getBuyerAccount();
-						sellerAccounts = accountingInput.getSellerAccount();
-				       } else {
-
-				       }
-				      } else {
-
-				      }
-				     }
-				    }
-				
+					 if(buyerAccounts.get(i).getLimit()!=0){
+						 buyerLimitsNotZero.add(buyerAccounts.get(i).getLimit());
+					 }
+				}
+				int[] numsBuyerLimits = new int[buyerLimitsNotZero.size()];
+				for(int i=0;i<buyerLimitsNotZero.size();i++){
+					numsBuyerLimits[i] = buyerLimitsNotZero.get(i);
+				}
+				List<Integer> sellerLimitsNotZero = new ArrayList<>();
+				for (int i = 0; i < sellerAccounts.size(); i++) {
+					 if(sellerAccounts.get(i).getLimit()!=0){
+						 sellerLimitsNotZero.add(sellerAccounts.get(i).getLimit());
+					 }
+				}
+				int[] numsSellerLimits = new int[sellerLimitsNotZero.size()];
+				for(int i=0;i<sellerLimitsNotZero.size();i++){
+					numsSellerLimits[i] = sellerLimitsNotZero.get(i);
+				}
+				//数据组装完毕
+				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
+				int buyer_kmin = sellerLimitsNotZero.size();//买方kmin
+				List<Integer> dealableSellerAccounts = new ArrayList<Integer>();//卖方账户额度列表
+				for (int i = 0; i < buyerAccounts.size(); i++) {
+				  TradeAccount BuyerAccount=null;
+				  if(buyerAccounts.get(i).getLimit()==0) {
+					  continue;
+					  }
+				  else{
+					  List<List<Integer>> resultList;
+					  //找最小的k
+					  int k_min=sellerLimitsNotZero.size();
+					  List<Integer> ksum_result=null;
+					  boolean flag = false;
+					  TradeAccount dealableBuyerAccount;//买方可成交的额度
+					  for(int k=sellerLimitsNotZero.size();k>=2;k--){
+						  resultList = new K_sum().sum(numsSellerLimits,buyerAccounts.get(i).getLimit(),k); 
+						  if(resultList!=null && resultList.size()>0) {
+							  k_min=k;
+							  //如何根据结果集中的卖方额度定位到卖方账户编号??
+							  ksum_result = resultList.get(0);
+							  BuyerAccount = buyerAccounts.get(i);
+							  flag = true;
+						  }
+					  }
+					  if(flag ==true){
+						  if(k_min<buyer_kmin){
+							  buyer_kmin = k_min;
+							  dealableSellerAccounts = ksum_result;
+							  dealableBuyerAccount = BuyerAccount;
+							  System.out.println("买方额度:"+buyerAccounts.get(i).getLimit()+",k:"+k_min);
+							  System.out.println(ksum_result);
+						  }
+					  }
+				  }	
+				}
+				//买方进行成交？
+				//
+				//TODO 卖方逻辑
+				//
 				//贪心策略 	每次取买卖双方最大额度的账户成交，相减并更新额度
 				int maxBuyerIndex = TradeAccount.maxLimit(buyerAccounts);
 				int maxSellerIndex = TradeAccount.maxLimit(sellerAccounts);
@@ -126,7 +145,7 @@ public class OptimalAccounting {
 
 
 	public static void main(String[] args) {
-		String filePath = "D:\\optimalAccounting\\testcase";
+		String filePath = "D:\\optimalAccounting\\testcase2";
 		File file = new File(filePath);
 		File[] files = file.listFiles();
 		List<File> fileList = new ArrayList<File>();// 新建一个文件集合
@@ -142,7 +161,7 @@ public class OptimalAccounting {
 			List<AccountingInput> inputs = FileUtil.readFile(file1);
 			Long startTime = System.currentTimeMillis();
 			List<String> calculateResults = calculate(inputs);
-			System.out.println((System.currentTimeMillis() - startTime));
+			System.out.println("耗时："+(System.currentTimeMillis() - startTime));
 			FileUtil.writeResult(calculateResults, fileName);
 		}
 
@@ -188,5 +207,9 @@ public class OptimalAccounting {
 		  return false;
 		 }
 	
+	//根据额度获取账户编号
+	public int getIndexByLimit(){
+		return 0;
+	}
 	
 }
