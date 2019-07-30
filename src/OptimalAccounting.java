@@ -75,8 +75,8 @@ public class OptimalAccounting {
 							  buyer_kmin = k_min;
 							  dealableSellerAccounts = ksum_result;
 							  dealableBuyerAccount = BuyerAccount;
-							  System.out.println("买方额度:"+buyerAccounts.get(i).getLimit()+",k:"+k_min);
-							  System.out.println(ksum_result);
+							  System.out.println("买方额度:"+dealableBuyerAccount.getLimit()+",k:"+buyer_kmin);
+							  System.out.println(dealableSellerAccounts);
 						  }
 					  }
 				  }	
