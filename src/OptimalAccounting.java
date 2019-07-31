@@ -24,7 +24,7 @@ public class OptimalAccounting {
 				sellerAccounts = accountingInput.getSellerAccount();
 				for (int i = 0; i < buyerAccounts.size(); i++) {
 				     for (int j = 0; j < sellerAccounts.size(); j++) {
-					//剪枝2--寻找买方账户额度之和等于卖方某个账户额度，直接成交
+					//剪枝2--寻找卖方账户额度之和等于买方某个账户额度，直接成交
 				    if (buyerAccounts.get(i).getLimit() != 0 && sellerAccounts.get(j).getLimit() != 0
 				        && (buyerAccounts.get(i).getLimit() > sellerAccounts.get(j).getLimit())) {
 				       if (isContains(sellerAccounts,
@@ -43,7 +43,7 @@ public class OptimalAccounting {
 				       }
 				      } else if (buyerAccounts.get(i).getLimit() != 0 && sellerAccounts.get(j).getLimit() != 0
 				        && (buyerAccounts.get(i).getLimit() < sellerAccounts.get(j).getLimit())) {
-				    	 //剪枝2--寻找卖方账户额度之和等于买方某个账户额度，直接成交
+				    	 //剪枝2--寻找买方账户额度之和等于卖方某个账户额度，直接成交
 				       if (isContains(buyerAccounts,
 				         sellerAccounts.get(j).getLimit() - buyerAccounts.get(i).getLimit())) {
 				        dealCount++;
@@ -124,7 +124,7 @@ public class OptimalAccounting {
 
 
 	public static void main(String[] args) {
-		String filePath = "D:\\optimalAccounting\\testcase";
+		String filePath = "D:\\optimalAccounting\\testcase2";
 		File file = new File(filePath);
 		File[] files = file.listFiles();
 		List<File> fileList = new ArrayList<File>();// 新建一个文件集合
