@@ -28,7 +28,7 @@ public class OptimalAccounting {
 				    if (buyerAccounts.get(i).getLimit() != 0 && sellerAccounts.get(j).getLimit() != 0
 				        && (buyerAccounts.get(i).getLimit() > sellerAccounts.get(j).getLimit())) {
 				       if (isContains(sellerAccounts,
-				         buyerAccounts.get(i).getLimit() - sellerAccounts.get(j).getLimit())) {
+				         buyerAccounts.get(i).getLimit() - sellerAccounts.get(j).getLimit(),sellerAccounts.get(j).getIndex())) {
 				        dealCount++;
 				        stringAppend(output,buyerAccounts.get(i).getIndex(),sellerAccounts.get(j).getIndex(),
 				        		sellerAccounts.get(j).getLimit());
@@ -45,7 +45,7 @@ public class OptimalAccounting {
 				        && (buyerAccounts.get(i).getLimit() < sellerAccounts.get(j).getLimit())) {
 				    	 //剪枝2--寻找买方账户额度之和等于卖方某个账户额度，直接成交
 				       if (isContains(buyerAccounts,
-				         sellerAccounts.get(j).getLimit() - buyerAccounts.get(i).getLimit())) {
+				         sellerAccounts.get(j).getLimit() - buyerAccounts.get(i).getLimit(),buyerAccounts.get(i).getIndex())) {
 				        dealCount++;
 				        stringAppend(output,buyerAccounts.get(i).getIndex(),sellerAccounts.get(j).getIndex(),
 				        		buyerAccounts.get(i).getLimit());
@@ -124,7 +124,7 @@ public class OptimalAccounting {
 
 
 	public static void main(String[] args) {
-		String filePath = "D:\\optimalAccounting\\testcase2";
+		String filePath = "D:\\optimalAccounting\\testcase";
 		File file = new File(filePath);
 		File[] files = file.listFiles();
 		List<File> fileList = new ArrayList<File>();// 新建一个文件集合
@@ -176,10 +176,10 @@ public class OptimalAccounting {
 		accountingInput.setSellerAccount(sellerAccounts);
 		return accountingInput;
 	}
-	
-	public static boolean isContains(List<TradeAccount> tradeAccounts, int tradeAccountLimit) {
+	//这个方法要改一下,有一种情况是 传进来的卖方当前额度*2等于买方的额度。或者买卖双方反过来。所以要剔除这种情况
+	public static boolean isContains(List<TradeAccount> tradeAccounts, int tradeAccountLimit,int currentIndex) {
 		  for (int i = 0; i < tradeAccounts.size(); i++) {
-		   if (tradeAccounts.get(i).getLimit() == tradeAccountLimit) {
+		   if (tradeAccounts.get(i).getLimit() == tradeAccountLimit && tradeAccounts.get(i).getIndex()!=currentIndex) {
 		    return true;
 		   }
 		  }

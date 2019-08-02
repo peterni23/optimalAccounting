@@ -176,7 +176,7 @@ public class OptimalAccounting {
 	
 	public static void main(String[] args){
 		Long startTime = System.currentTimeMillis();
-		String filePath = "D:\\optimalAccounting\\testcase";
+		String filePath = "D:\\optimalAccounting\\testcase2";
         File file = new File(filePath);
         File[] files = file.listFiles();
         List<File> fileList = new ArrayList<File>();//新建一个文件集合
