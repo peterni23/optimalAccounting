@@ -30,9 +30,9 @@ public class OptimalAccounting {
 						 buyerLimitsNotZero.add(buyerAccounts.get(i).getLimit());
 					 }
 				}
-				int[] numsBuyerLimits = new int[buyerLimitsNotZero.size()];
+				int[] numsBuyerLimits1 = new int[buyerLimitsNotZero.size()];
 				for(int i=0;i<buyerLimitsNotZero.size();i++){
-					numsBuyerLimits[i] = buyerLimitsNotZero.get(i);
+					numsBuyerLimits1[i] = buyerLimitsNotZero.get(i);
 				}
 				List<Integer> sellerLimitsNotZero = new ArrayList<>();
 				for (int i = 0; i < sellerAccounts.size(); i++) {
@@ -40,9 +40,9 @@ public class OptimalAccounting {
 						 sellerLimitsNotZero.add(sellerAccounts.get(i).getLimit());
 					 }
 				}
-				int[] numsSellerLimits = new int[sellerLimitsNotZero.size()];
+				int[] numsSellerLimits1 = new int[sellerLimitsNotZero.size()];
 				for(int i=0;i<sellerLimitsNotZero.size();i++){
-					numsSellerLimits[i] = sellerLimitsNotZero.get(i);
+					numsSellerLimits1[i] = sellerLimitsNotZero.get(i);
 				}
 				//数据组装完毕
 				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
@@ -63,7 +63,7 @@ public class OptimalAccounting {
 					  TradeAccount buyerAccount = null;//买方可成交的账户
 					  boolean flag = false;
 					  for(int k=sellerLimitsNotZero.size();k>=2;k--){
-						  resultList = new K_sum().sum(numsSellerLimits,buyerAccounts.get(i).getLimit(),k); 
+						  resultList = new K_sum().sum(numsSellerLimits1,buyerAccounts.get(i).getLimit(),k); 
 						  if(resultList!=null && resultList.size()>0) {
 							  k_min=k;
 							  //如何根据结果集中的卖方额度定位到卖方账户编号??
@@ -108,6 +108,7 @@ public class OptimalAccounting {
 				
 				//
 				//TODO 卖方逻辑
+
 				buyerLimitsNotZero=new ArrayList<>();
 				sellerLimitsNotZero=new ArrayList<>();
 				for (int i = 0; i < buyerAccounts.size(); i++) {
@@ -115,16 +116,19 @@ public class OptimalAccounting {
 						 buyerLimitsNotZero.add(buyerAccounts.get(i).getLimit());
 					 }
 				}
+				int[] numsBuyerLimits2 = new int[buyerLimitsNotZero.size()];
+
 				for(int i=0;i<buyerLimitsNotZero.size();i++){
-					numsBuyerLimits[i] = buyerLimitsNotZero.get(i);
+					numsBuyerLimits2[i] = buyerLimitsNotZero.get(i);
 				}
 				for (int i = 0; i < sellerAccounts.size(); i++) {
 					 if(sellerAccounts.get(i).getLimit()!=0){
 						 sellerLimitsNotZero.add(sellerAccounts.get(i).getLimit());
 					 }
 				}
+				int[] numsSellerLimits2 = new int[sellerLimitsNotZero.size()];
 				for(int i=0;i<sellerLimitsNotZero.size();i++){
-					numsSellerLimits[i] = sellerLimitsNotZero.get(i);
+					numsSellerLimits2[i] = sellerLimitsNotZero.get(i);
 				}
 				//数据组装完毕
 				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
@@ -144,7 +148,7 @@ public class OptimalAccounting {
 					  TradeAccount sellerAccount = null;//卖方可成交的账户
 					  boolean flag = false;
 					  for(int k=buyerLimitsNotZero.size();k>=2;k--){
-						  resultList = new K_sum().sum(numsBuyerLimits,sellerAccounts.get(i).getLimit(),k); 
+						  resultList = new K_sum().sum(numsBuyerLimits2,sellerAccounts.get(i).getLimit(),k); 
 						  if(resultList!=null && resultList.size()>0) {
 							  k_min=k;
 							  //如何根据结果集中的卖方额度定位到卖方账户编号??
