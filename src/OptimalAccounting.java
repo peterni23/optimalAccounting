@@ -46,7 +46,7 @@ public class OptimalAccounting {
 				}
 				//数据组装完毕
 				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
-				int buyer_kmin = 0;//买方kmin
+				int buyer_kmin = sellerLimitsNotZero.size()+1;//买方kmin
 				TradeAccount dealableBuyerAccount = null;//买方可成交的账户
 				List<Integer> dealableSellerAccounts = new ArrayList<Integer>();//卖方账户额度列表
 				boolean buy_flag = false;
@@ -73,13 +73,13 @@ public class OptimalAccounting {
 						  }
 					  }
 					  if(flag ==true){
-						  if(k_min<buyer_kmin){
+						  if(k_min<=buyer_kmin){
 							  buy_flag = true;
 							  buyer_kmin = k_min;
 							  dealableSellerAccounts = ksum_result;
 							  dealableBuyerAccount = buyerAccount;
 //							  System.out.println("买方额度:"+dealableBuyerAccount.getLimit()+",k:"+buyer_kmin);
-//							  System.out.println(dealableSellerAccounts);
+//							  System.out.println("卖方额度:"+dealableSellerAccounts);
 						  }
 					  }
 				  }	
@@ -99,8 +99,11 @@ public class OptimalAccounting {
 					}
 					dealCount++;
 					stringAppend(output,buyerAccounts.get(buy_index).getIndex(),
-							sellerAccounts.get(sell_index).getIndex(),buyerAccounts.get(buy_index).getLimit());
-				    
+							sellerAccounts.get(sell_index).getIndex(),sellerAccounts.get(sell_index).getLimit());
+//				    System.out.println("成交："+output+","+buyerAccounts.get(buy_index).getIndex()+","+
+//							sellerAccounts.get(sell_index).getIndex()+","+buyerAccounts.get(buy_index).getLimit());
+				    System.out.println(output);
+
 					buyerAccounts.get(buy_index).setLimit(
 							buyerAccounts.get(buy_index).getLimit() - sellerAccounts.get(sell_index).getLimit());
 					sellerAccounts.get(sell_index).setLimit(0);
@@ -131,8 +134,8 @@ public class OptimalAccounting {
 					numsSellerLimits2[i] = sellerLimitsNotZero.get(i);
 				}
 				//数据组装完毕
-				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
-				int seller_kmin = 0;//买方kmin
+				//循环 以卖方账户每个非0值为target 买方账户为 nums 针对每个target找到最小的k
+				int seller_kmin = buyerLimitsNotZero.size()+1;//买方kmin
 				TradeAccount dealableSellerAccount = null;//卖方可成交的账户
 				List<Integer> dealableBuyerAccounts = new ArrayList<Integer>();//买方账户额度列表
 				boolean sell_flag = false;
@@ -158,13 +161,13 @@ public class OptimalAccounting {
 						  }
 					  }
 					  if(flag ==true){
-						  if(k_min<buyer_kmin){
+						  if(k_min<=buyer_kmin){
 							  buy_flag = true;
 							  seller_kmin = k_min;
 							  dealableBuyerAccounts = ksum_result;
 							  dealableSellerAccount = sellerAccount;
-//							  System.out.println("买方额度:"+dealableBuyerAccount.getLimit()+",k:"+buyer_kmin);
-//							  System.out.println(dealableSellerAccounts);
+//							  System.out.println("卖方额度:"+dealableSellerAccount.getLimit()+",k:"+seller_kmin);
+//							  System.out.println("买方额度:"+dealableBuyerAccounts);
 						  }
 					  }
 				  }	
@@ -185,10 +188,10 @@ public class OptimalAccounting {
 					dealCount++;
 					stringAppend(output,buyerAccounts.get(buy_index).getIndex(),
 							sellerAccounts.get(sell_index).getIndex(),buyerAccounts.get(buy_index).getLimit());
-				    
+				    System.out.println(output);
 					sellerAccounts.get(sell_index).setLimit(
-							sellerAccounts.get(sell_index).getLimit() - sellerAccounts.get(buy_index).getLimit());
-					buyerAccounts.get(sell_index).setLimit(0);
+							sellerAccounts.get(sell_index).getLimit() - buyerAccounts.get(buy_index).getLimit());
+					buyerAccounts.get(buy_index).setLimit(0);
 				}
 				
 				
