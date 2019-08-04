@@ -46,68 +46,53 @@ public class OptimalAccounting {
 				}
 				//数据组装完毕
 				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
-				int buyer_kmin = sellerLimitsNotZero.size()+1;//买方kmin
 				TradeAccount dealableBuyerAccount = null;//买方可成交的账户
 				List<Integer> dealableSellerAccounts = new ArrayList<Integer>();//卖方账户额度列表
-				boolean buy_flag = false;
 				for (int i = 0; i < buyerAccounts.size(); i++) {
-				  TradeAccount BuyerAccount=null;
 				  if(buyerAccounts.get(i).getLimit()==0) {
 					  continue;
 					  }
 				  else{
 					  List<List<Integer>> resultList;
-					  //找最小的k
-					  int k_min=sellerLimitsNotZero.size();
-					  List<Integer> ksum_result=null;
-					  TradeAccount buyerAccount = null;//买方可成交的账户
 					  boolean flag = false;
-					  for(int k=sellerLimitsNotZero.size();k>=2;k--){
+					  for(int k=2;k<=sellerLimitsNotZero.size();k++){
 						  resultList = new K_sum().sum(numsSellerLimits1,buyerAccounts.get(i).getLimit(),k); 
 						  if(resultList!=null && resultList.size()>0) {
-							  k_min=k;
+							  //k_min=k;
 							  //如何根据结果集中的卖方额度定位到卖方账户编号??
-							  ksum_result = resultList.get(0);
-							  buyerAccount = buyerAccounts.get(i);
+							  dealableSellerAccounts = resultList.get(0);
+							  dealableBuyerAccount = buyerAccounts.get(i);
 							  flag = true;
+							  break;
 						  }
 					  }
-					  if(flag ==true){
-						  if(k_min<=buyer_kmin){
-							  buy_flag = true;
-							  buyer_kmin = k_min;
-							  dealableSellerAccounts = ksum_result;
-							  dealableBuyerAccount = buyerAccount;
-//							  System.out.println("买方额度:"+dealableBuyerAccount.getLimit()+",k:"+buyer_kmin);
-//							  System.out.println("卖方额度:"+dealableSellerAccounts);
-						  }
+					  if(flag==true){
+						  for(int k=0;k<dealableSellerAccounts.size();k++){
+							//成交一笔
+							int buy_index = 0,sell_index=0;
+							for(int m = 0; m < buyerAccounts.size(); m++){
+								if(buyerAccounts.get(m).getIndex()==dealableBuyerAccount.getIndex()){
+									buy_index=m;
+								}
+							}
+							for(int n = 0; n < sellerAccounts.size(); n++){
+								if(sellerAccounts.get(n).getLimit()==dealableSellerAccounts.get(k)){
+									sell_index=n;
+								}
+							}
+							dealCount++;
+							stringAppend(output,buyerAccounts.get(buy_index).getIndex(),
+									sellerAccounts.get(sell_index).getIndex(),sellerAccounts.get(sell_index).getLimit());
+							buyerAccounts.get(buy_index).setLimit(
+									buyerAccounts.get(buy_index).getLimit() - sellerAccounts.get(sell_index).getLimit());
+							sellerAccounts.get(sell_index).setLimit(0);
+						   
+					   }
+						  break;
 					  }
 				  }	
 				}
-				if(buy_flag==true){
-					//成交一笔
-					int buy_index = 0,sell_index=0;
-					for(int i = 0; i < buyerAccounts.size(); i++){
-						if(buyerAccounts.get(i).getIndex()==dealableBuyerAccount.getIndex()){
-							buy_index=i;
-						}
-					}
-					for(int i = 0; i < sellerAccounts.size(); i++){
-						if(sellerAccounts.get(i).getLimit()==dealableSellerAccounts.get(0)){
-							sell_index=i;
-						}
-					}
-					dealCount++;
-					stringAppend(output,buyerAccounts.get(buy_index).getIndex(),
-							sellerAccounts.get(sell_index).getIndex(),sellerAccounts.get(sell_index).getLimit());
-//				    System.out.println("成交："+output+","+buyerAccounts.get(buy_index).getIndex()+","+
-//							sellerAccounts.get(sell_index).getIndex()+","+buyerAccounts.get(buy_index).getLimit());
-				    System.out.println(output);
-
-					buyerAccounts.get(buy_index).setLimit(
-							buyerAccounts.get(buy_index).getLimit() - sellerAccounts.get(sell_index).getLimit());
-					sellerAccounts.get(sell_index).setLimit(0);
-				}
+				
 				
 				//
 				//TODO 卖方逻辑
@@ -135,65 +120,55 @@ public class OptimalAccounting {
 				}
 				//数据组装完毕
 				//循环 以卖方账户每个非0值为target 买方账户为 nums 针对每个target找到最小的k
-				int seller_kmin = buyerLimitsNotZero.size()+1;//买方kmin
 				TradeAccount dealableSellerAccount = null;//卖方可成交的账户
 				List<Integer> dealableBuyerAccounts = new ArrayList<Integer>();//买方账户额度列表
-				boolean sell_flag = false;
 				for (int i = 0; i < sellerAccounts.size(); i++) {
 				  if(sellerAccounts.get(i).getLimit()==0) {
 					  continue;
 					  }
 				  else{
 					  List<List<Integer>> resultList;
-					  //找最小的k
-					  int k_min = buyerLimitsNotZero.size();
-					  List<Integer> ksum_result=null;
-					  TradeAccount sellerAccount = null;//卖方可成交的账户
+				
 					  boolean flag = false;
-					  for(int k=buyerLimitsNotZero.size();k>=2;k--){
+					  for(int k=2;k<=buyerLimitsNotZero.size();k++){
 						  resultList = new K_sum().sum(numsBuyerLimits2,sellerAccounts.get(i).getLimit(),k); 
 						  if(resultList!=null && resultList.size()>0) {
-							  k_min=k;
 							  //如何根据结果集中的卖方额度定位到卖方账户编号??
-							  ksum_result = resultList.get(0);
-							  sellerAccount = sellerAccounts.get(i);
+							  dealableBuyerAccounts = resultList.get(0);
+							  dealableSellerAccount = sellerAccounts.get(i);
 							  flag = true;
+							  break;
 						  }
 					  }
-					  if(flag ==true){
-						  if(k_min<=buyer_kmin){
-							  buy_flag = true;
-							  seller_kmin = k_min;
-							  dealableBuyerAccounts = ksum_result;
-							  dealableSellerAccount = sellerAccount;
-//							  System.out.println("卖方额度:"+dealableSellerAccount.getLimit()+",k:"+seller_kmin);
-//							  System.out.println("买方额度:"+dealableBuyerAccounts);
-						  }
+					  
+					  if(flag==true){
+						  for(int l=0;l<dealableBuyerAccounts.size();l++){
+							//成交一笔
+							int buy_index = 0,sell_index=0;
+							for(int m = 0; m < sellerAccounts.size(); m++){
+								if(sellerAccounts.get(m).getIndex()==dealableSellerAccount.getIndex()){
+									sell_index=m;
+								}
+							}
+							for(int n = 0; n < buyerAccounts.size(); n++){
+								if(buyerAccounts.get(n).getLimit()==dealableBuyerAccounts.get(l)){
+									buy_index=n;
+								}
+							}
+							dealCount++;
+							stringAppend(output,buyerAccounts.get(buy_index).getIndex(),
+									sellerAccounts.get(sell_index).getIndex(),buyerAccounts.get(buy_index).getLimit());
+//						    System.out.println(output);
+							sellerAccounts.get(sell_index).setLimit(
+									sellerAccounts.get(sell_index).getLimit() - buyerAccounts.get(buy_index).getLimit());
+							buyerAccounts.get(buy_index).setLimit(0);
+						}
+						  break;
 					  }
+					  
+//					  
 				  }	
 				}
-				if(sell_flag==true){
-					//成交一笔
-					int buy_index = 0,sell_index=0;
-					for(int i = 0; i < sellerAccounts.size(); i++){
-						if(sellerAccounts.get(i).getIndex()==dealableSellerAccount.getIndex()){
-							sell_index=i;
-						}
-					}
-					for(int i = 0; i < buyerAccounts.size(); i++){
-						if(buyerAccounts.get(i).getLimit()==dealableBuyerAccounts.get(0)){
-							buy_index=i;
-						}
-					}
-					dealCount++;
-					stringAppend(output,buyerAccounts.get(buy_index).getIndex(),
-							sellerAccounts.get(sell_index).getIndex(),buyerAccounts.get(buy_index).getLimit());
-				    System.out.println(output);
-					sellerAccounts.get(sell_index).setLimit(
-							sellerAccounts.get(sell_index).getLimit() - buyerAccounts.get(buy_index).getLimit());
-					buyerAccounts.get(buy_index).setLimit(0);
-				}
-				
 				
 				//
 				//贪心策略 	每次取买卖双方最大额度的账户成交，相减并更新额度
