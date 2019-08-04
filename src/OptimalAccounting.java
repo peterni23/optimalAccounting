@@ -48,7 +48,7 @@ public class OptimalAccounting {
 				//循环 以买方账户每个非0值为target 卖方账户为 nums 针对每个target找到最小的k
 				TradeAccount dealableBuyerAccount = null;//买方可成交的账户
 				List<Integer> dealableSellerAccounts = new ArrayList<Integer>();//卖方账户额度列表
-				for (int i = 0; i < buyerAccounts.size(); i++) {
+				for (int i = buyerAccounts.size()-1; i >=0; i--) {
 				  if(buyerAccounts.get(i).getLimit()==0) {
 					  continue;
 					  }
@@ -122,7 +122,7 @@ public class OptimalAccounting {
 				//循环 以卖方账户每个非0值为target 买方账户为 nums 针对每个target找到最小的k
 				TradeAccount dealableSellerAccount = null;//卖方可成交的账户
 				List<Integer> dealableBuyerAccounts = new ArrayList<Integer>();//买方账户额度列表
-				for (int i = 0; i < sellerAccounts.size(); i++) {
+				for (int i = sellerAccounts.size()-1; i >=0; i--) {
 				  if(sellerAccounts.get(i).getLimit()==0) {
 					  continue;
 					  }
